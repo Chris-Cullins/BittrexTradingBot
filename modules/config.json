@@ -1,6 +1,6 @@
 {
   "mainSettings": {
-    "intervalBetweenScans": 120000
+    "intervalBetweenScans": 300000
   },
   "emailConfig": {
     "emailFromAddress": "t.a.notifier@gmail.com",

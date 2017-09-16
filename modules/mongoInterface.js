@@ -33,6 +33,7 @@ var recordSell = function(ticker, last, quantity, btcValue, callback) {
     buys.findOneAndUpdate({ticker: ticker, isCurrent: true}, {$set: {isCurrent: false}}, function(err, result) {
         var sells = curConnection.collection('sells');
         sells.insertOne({ticker: ticker, price: last, quantity: quantity, btcValue: btcValue, date: new Date(), buyId: result.value._id}, function(err, result) {
+            console.log('Sell was recorded! :' + ticker + ' - at ' + last + ' - ' + quantity + ' - ' + btcValue);
             callback(result);
         });
     });

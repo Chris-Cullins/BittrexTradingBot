@@ -59,7 +59,7 @@ var doScan = function(marketArray) {
     function doCandles(marketArray, index) {
         utilities.wait(1000);
 
-        bittrex.getCandles(marketArray[index], 'hour', function(data) {
+        bittrex.getCandles(marketArray[index], 'fiveMin', function(data) {
 
             mongoInterface.currentlyHasPosition(marketArray[index], function(posQuantity) {
 
