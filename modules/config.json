@@ -1,0 +1,32 @@
+{
+  "mainSettings": {
+    "intervalBetweenScans": 120000
+  },
+  "emailConfig": {
+    "emailFromAddress": "t.a.notifier@gmail.com",
+    "emailPassword": "Soad1234",
+    "emailTOAddress": "5017228346@vtext.com",
+    "emailSUBJECT": "Indicator Alert"
+  },
+  "algorithmConfig": {
+    "stochdiverge": false,
+    "tripstoch": false,
+    "macdcross": {
+      "use": true,
+      "fastPeriod": 12,
+      "slowPeriod": 26,
+      "signalPeriod": 9,
+      "rsiPeriod": 7,
+      "stochPeriod": 14,
+      "stochSignalPeriod": 3
+    }
+  }, "traderConfig": {
+        "maxPositionSize": 0.05,
+        "maxPositionsTaken": 0.2,
+        "stopLoss": 0.01,
+        "tickersToTrade": ["BTC-ARK", "BTC-2GIVE", "BTC-ABY","BTC-1ST","BTC-BAT","BTC-BLITZ","BTC-CLOAK","BTC-CVC","BTC-DGB","BTC-DGD","BTC-EDG",
+          "BTC-ENRG", "BTC-ETH", "BTC-GNT","BTC-GOLOS","BTC-KORE","BTC-LMC","BTC-LSK","BTC-LTC","BTC-MAID","BTC-MCO","BTC-MONA",
+          "BTC-MTL", "BTC-NAV", "BTC-NBT","BTC-NEO","BTC-NMR","BTC-OMG","BTC-PAY","BTC-PDC","BTC-QTUM", "BTC-RISE","BTC-RLC",
+          "BTC-SLR", "BTC-SNGLS", "BTC-SNT","BTC-STRAT","BTC-TRIG","BTC-UBQ","BTC-WAVES","BTC-XEL","BTC-XMR", "BTC-XVG","BTC-ZEC"]
+  }
+}
