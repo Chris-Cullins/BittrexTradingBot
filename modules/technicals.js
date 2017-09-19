@@ -8,14 +8,14 @@ const Stochastic = ta.Stochastic;
 var RSI = ta.RSI;
 var MACD = ta.MACD;
 
-
-
 var sma = function(series1, period) {
     if (typeof period === "undefined") {
         period = 5;
+
+        return SMA.calculate({period: period, values: series1});
     }
-    return SMA.calculate({period: period, values: series1});
-};
+    ;
+}
 
 var rsi = function(inputRSI) {
     return RSI.calculate(inputRSI);

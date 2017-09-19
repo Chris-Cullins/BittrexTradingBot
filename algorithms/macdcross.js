@@ -128,22 +128,38 @@ var checkForMACDCrossExit = function(ticker, input, log) {
  */
 var determineIfWereInAnEntryPoint = function(stochastic, rsi, macddata, log) {
 
+    if (stochastic[stochastic.length - 1] === undefined ||
+        stochastic[stochastic.length - 2] === undefined ||
+        stochastic[stochastic.length - 3] === undefined ||
+        stochastic[stochastic.length - 4] === undefined ||
+        rsi[rsi.length - 1] === undefined ||
+        rsi[rsi.length - 2] === undefined ||
+        rsi[rsi.length - 3] === undefined ||
+        rsi[rsi.length - 4] === undefined ||
+        macddata[macddata.length - 1] === undefined ||
+        macddata[macddata.length - 2] === undefined ||
+        macddata[macddata.length - 3] === undefined ||
+        macddata[macddata.length - 4] === undefined) {
+        return false;
+    }
+
+
     //did the stochastic just cross into 'above 50' territory?
     var yesStoch = false;
-    if (stochastic[stochastic.length - 1].d > 50) {
-        if (stochastic[stochastic.length - 2].d <= 50 ||
-            stochastic[stochastic.length - 3].d <= 50 ||
-            stochastic[stochastic.length - 4].d <= 50) {
+    if (stochastic[stochastic.length - 1].d > config.algorithmConfig.macdcross.stochTreshholdBelow) {
+        if (stochastic[stochastic.length - 2].d <= config.algorithmConfig.macdcross.stochTreshholdBelow ||
+            stochastic[stochastic.length - 3].d <= config.algorithmConfig.macdcross.stochTreshholdBelow ||
+            stochastic[stochastic.length - 4].d <= config.algorithmConfig.macdcross.stochTreshholdBelow) {
             yesStoch = true;
         }
     }
 
     //did rsi just cross into above 50?
     var yesRSI = false;
-    if (rsi[rsi.length - 1] > 50) {
-        if (rsi[rsi.length - 2] <= 50 ||
-            rsi[rsi.length - 3] <= 50 ||
-            rsi[rsi.length - 4] <= 50) {
+    if (rsi[rsi.length - 1] > config.algorithmConfig.macdcross.rsiTreshholdBelow) {
+        if (rsi[rsi.length - 2] <= config.algorithmConfig.macdcross.rsiTreshholdBelow ||
+            rsi[rsi.length - 3] <= config.algorithmConfig.macdcross.rsiTreshholdBelow ||
+            rsi[rsi.length - 4] <= config.algorithmConfig.macdcross.rsiTreshholdBelow) {
             yesRSI = true;
         }
     }
@@ -188,22 +204,37 @@ var determineIfWereInAnEntryPoint = function(stochastic, rsi, macddata, log) {
 
 var determineIfWereInAnExitPoint = function(stochastic, rsi, macddata, log) {
 
+    if (stochastic[stochastic.length - 1] === undefined ||
+        stochastic[stochastic.length - 2] === undefined ||
+        stochastic[stochastic.length - 3] === undefined ||
+        stochastic[stochastic.length - 4] === undefined ||
+        rsi[rsi.length - 1] === undefined ||
+        rsi[rsi.length - 2] === undefined ||
+        rsi[rsi.length - 3] === undefined ||
+        rsi[rsi.length - 4] === undefined ||
+        macddata[macddata.length - 1] === undefined ||
+        macddata[macddata.length - 2] === undefined ||
+        macddata[macddata.length - 3] === undefined ||
+        macddata[macddata.length - 4] === undefined) {
+        return false;
+    }
+
     var yesStoch = false;
-    if (stochastic[stochastic.length - 1].d < 50) {
-        if (stochastic[stochastic.length - 2].d >= 50 ||
+    if (stochastic[stochastic.length - 1].d < config.algorithmConfig.macdcross.stochTreshholdAbove) {
+        /*if (stochastic[stochastic.length - 2].d >= 50 ||
             stochastic[stochastic.length - 3].d >= 50 ||
-            stochastic[stochastic.length - 4].d >= 50) {
+            stochastic[stochastic.length - 4].d >= 50) {*/
             yesStoch = true;
-        }
+        //}
     }
 
     var yesRSI = false;
-    if (rsi[rsi.length - 1] < 50) {
-        if (rsi[rsi.length - 2] >= 50 ||
+    if (rsi[rsi.length - 1] <  config.algorithmConfig.macdcross.rsiTreshholdAbove) {
+       /* if (rsi[rsi.length - 2] >= 50 ||
             rsi[rsi.length - 3] >= 50 ||
-            rsi[rsi.length - 4] >= 50) {
+            rsi[rsi.length - 4] >= 50) {*/
             yesRSI = true;
-        }
+        //}
     }
 
 
@@ -211,18 +242,18 @@ var determineIfWereInAnExitPoint = function(stochastic, rsi, macddata, log) {
     var yesMACDPositive = false;
 
     if (macddata[macddata.length - 1].MACD < 0) {
-        if (macddata[macddata.length - 2].MACD >= 0 ||
+        /*if (macddata[macddata.length - 2].MACD >= 0 ||
             macddata[macddata.length - 3].MACD >= 0 ||
-            macddata[macddata.length - 4].MACD >= 0) {
+            macddata[macddata.length - 4].MACD >= 0) {*/
             yesMACDPositive = true;
-        }
+        //}
     }
     if (macddata[macddata.length - 1].MACD < macddata[macddata.length - 1].signal) {
-        if (macddata[macddata.length - 2].MACD >= macddata[macddata.length - 2].signal ||
+        /*if (macddata[macddata.length - 2].MACD >= macddata[macddata.length - 2].signal ||
             macddata[macddata.length - 3].MACD >= macddata[macddata.length - 3].signal ||
-            macddata[macddata.length - 4].MACD >= macddata[macddata.length - 4].signal) {
+            macddata[macddata.length - 4].MACD >= macddata[macddata.length - 4].signal) {*/
             yesMACDAboveSignal = true;
-        }
+        //}
     }
 
     return (yesStoch && yesRSI &&  yesMACDAboveSignal && yesMACDPositive);

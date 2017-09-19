@@ -20,18 +20,32 @@ bittrexAPI.getAvaliableMarkets(function (returned) {
             }
         }
     }
-    //trader.setTickersToTrade(marketArray);
-    setInterval(function() {
 
-         mongoInterface.connect(function (result) {
-             trader.setTradingParameters(function (result) {
+    //var marketArray = config.traderConfig.tickersToTrade;
 
-                 mongoInterface.determineCurrentProfits(function (result) {
-                     trader.doScan(marketArray);
-                     console.log('Current profits - ' + result);
-                 });
-             });
-        });
-    }, config.mainSettings.intervalBetweenScans);
+    mongoInterface.connect(function (result) {
+        //mongoInterface.getAllPositions(function(result) {
 
+            //mongoInterface.determineProfitsOnPositions(result, function (profitsOnPos) {
+                //console.log('Profits on positions - ' + profitsOnPos);
+
+                //bittrexAPI.syncOrderHistory(function(done) {
+                    //console.log(done);
+
+                    setInterval(function() {
+                        trader.setTradingParameters(function (result) {
+                            console.log(result);
+                            mongoInterface.determineCurrentProfits(function (result) {
+                                //trader.addToAccountBalance(result, function (done) {
+                                    trader.doScan(marketArray);
+                                    console.log('Current profits - ' + result);
+                                //});
+                            });
+                        });
+
+                    }, config.mainSettings.intervalBetweenScans);
+                //});
+            //});
+        //});
+    });
 });

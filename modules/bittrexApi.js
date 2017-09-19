@@ -1,6 +1,7 @@
 var bittrex = require('node.bittrex.api');
-var config = require('./api_settings.json');
+var config = require('./api_settings_prod.json');
 var utilities = require('./utilities');
+var mongoInterface = require('./mongoInterface');
 
 bittrex.options({
     'apikey': config.api_key,
@@ -60,8 +61,6 @@ var getAccountBalance = function(callbackfinal) {
     });
 };
 
-
-
 var getticker = function(coin, callback) {
     var url = 'https://bittrex.com/api/v1.1/public/getticker?market=' + coin;
     bittrex.sendCustomRequest( url, function( data, err ) {
@@ -88,11 +87,14 @@ var getMarketHistory = function() {
 var getAvaliableMarkets = function(callback) {
     bittrex.getmarketsummaries(function(data, err) {
         if (err) {
-            return console.error(err);
+            console.error(err);
+            return callback([]);
         } else {
             var marketArray = [];
             for (var i in data.result) {
-                marketArray.push(data.result[i].MarketName)
+                if (data.result[i].BaseVolume > 50) {
+                    marketArray.push(data.result[i].MarketName)
+                }
             }
             return callback(marketArray);
         }
@@ -127,7 +129,7 @@ var getCandles = function( marketName, tickInterval, callback) {
         //console.log(data);
         if (err) {
             console.log(err);
-            return;
+            return callback([]);
         }
         var returnArray = [];
         if (data !== null) {
@@ -153,11 +155,84 @@ function bittrexPublicRequestJustURI(command){
     }
 }
 
+var placeBuyOrderLimit = function(ticker, orderQuantity, rate, callback) {
+
+
+    var buyParams = {
+        market: ticker,
+        quantity: orderQuantity.toFixed(8),
+        rate: rate
+    };
+
+    bittrex.buylimit(buyParams, function(result) {
+        if (result !== null && result.success === true) {
+
+            var btcValue = orderQuantity * rate;
+            var newOrderQuantity = parseFloat(orderQuantity).toFixed(8);
+
+            mongoInterface.recordBuy(ticker, rate,newOrderQuantity, btcValue.toFixed(8), function(dbResult) {
+                callback(dbResult);
+            });
+        } else {
+            console.log(result);
+        }
+    });
+};
+
+var placeSellOrderLimit = function(ticker, orderQuantity, rate, callback) {
+
+    //var newOrderQuantity = (orderQuantity * 0.9975).toFixed(8);
+    var sellParams = {
+        market: ticker,
+        quantity: orderQuantity.toFixed(8),
+        rate: rate
+    };
+
+    bittrex.selllimit(sellParams, function(result) {
+        if (result.success === true) {
+            var btcValue = orderQuantity * rate;
+            mongoInterface.recordSell(ticker, rate, orderQuantity.toFixed(8), btcValue.toFixed(8), function(dbResult) {
+                callback(dbResult);
+            });
+        }
+    });
+};
+
+var placeSellOrderMarket = function(ticker, orderQuantity, rate, callback) {
+
+    //var newOrderQuantity = (orderQuantity * 0.9975).toFixed(8);
+    var sellParams = {
+        market: ticker,
+        quantity: orderQuantity.toFixed(8)
+    };
+
+    bittrex.sellmarket(sellParams, function(err, result) {
+        if (result.success === true) {
+            var btcValue = orderQuantity * rate;
+            mongoInterface.recordSell(ticker, rate, orderQuantity.toFixed(8), btcValue.toFixed(8), function(dbResult) {
+                callback(dbResult);
+            });
+        }
+    });
+};
+
+var syncOrderHistory = function(callback) {
+    bittrex.getorderhistory({}, function(result) {
+        mongoInterface.syncOrderHistory((result), function(dbResult) {
+            callback(dbResult);
+        });
+    });
+};
 
 //exports.websocketsclient = websocketsclient;
 exports.gettickers = gettickers;
+exports.getticker = getticker;
 exports.getMarketHistory = getMarketHistory;
 exports.getCandlesCloses = getCandlesCloses;
 exports.getAvaliableMarkets = getAvaliableMarkets;
 exports.getCandles = getCandles;
 exports.getAccountBalance = getAccountBalance;
+exports.placeBuyOrderLimit = placeBuyOrderLimit;
+exports.placeSellOrderLimit = placeSellOrderLimit;
+exports.syncOrderHistory = syncOrderHistory;
+exports.placeSellOrderMarket = placeSellOrderMarket;
