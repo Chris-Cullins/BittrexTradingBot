@@ -6,7 +6,8 @@ var mongoInterface = require('../modules/mongoInterface');
 mongoInterface.connect(function(result) {
 
     console.log(result);
-    bittrexAPI_test.testPlaceSellOrderMarket();
+    bittrexAPI_test.testStopOrder();
+
 
 });
 //bittrexAPI_test.testPlaceSellOrderMarket();

@@ -59,6 +59,21 @@ var testPlaceSellOrderMarket = function() {
 }
 
 
+var testStopOrder = function() {
+
+    var ticker = 'BTC-BAT';
+    var orderQuantity = 73.69782047;
+    var rate = 0.00007480;
+
+    bittrexApi.placeSellStopOrderLimit(ticker, orderQuantity, rate, function(result) {
+
+        console.log(result);
+
+        bittrexApi.getOpenOrders(ticker);
+    });
+
+}
 exports.testPlaceSellOrderLimit = testPlaceSellOrderLimit;
 exports.testPlaceSellOrderMarket = testPlaceSellOrderMarket;
 exports.testPlaceBuyOrderMarket = testPlaceBuyOrderMarket;
+exports.testStopOrder = testStopOrder;

@@ -73,19 +73,19 @@ var doScan = function(marketArray) {
     function doCandles(marketArray, index) {
         utilities.wait(1000);
 
-        bittrex.getCandles(marketArray[index], 'thirtyMin', function(data) {
+        bittrex.getCandles(marketArray[index], 'hour', function(data) {
 
             mongoInterface.currentlyHasPosition(marketArray[index], function(posQuantity) {
 
                 if (posQuantity === null) {
                     //var hasMACDCross = macdCross.checkForMACDCrossEntry(marketArray[index], data, logStoch);
 
-                   // var hasStochCross = stochCross.checkForStochRSIEntry(marketArray[index], data, logStoch);
+                   var hasStochCross = stochCross.checkForStochRSIEntry(marketArray[index], data, logStoch);
 
 
-                    var hasRSIEntry = rsiCross.checkForRSIEntry(marketArray[index], data, logStoch);
+                    //var hasRSIEntry = rsiCross.checkForRSIEntry(marketArray[index], data, logStoch);
 
-                    if (hasRSIEntry) {
+                    if (hasStochCross) {
 
                         doEntryTrade(marketArray[index], data[data.length - 1].L, function (result) {
                             index++;
@@ -100,11 +100,11 @@ var doScan = function(marketArray) {
                     //var hasMACDCrossExit = macdCross.checkForMACDCrossExit(marketArray[index], data, logStoch);
 
 
-                   // var hasStochExit = stochCross.checkForStochRSIExit(marketArray[index], data, logStoch);
+                   var hasStochExit = stochCross.checkForStochRSIExit(marketArray[index], data, logStoch);
 
-                    var hasRSIExit = hasRSIEntry.checkForRSIExit(marketArray[index], data, logStoch);
+                    //var hasRSIExit = hasRSIEntry.checkForRSIExit(marketArray[index], data, logStoch);
 
-                    if (hasRSIExit) {
+                    if (hasStochExit) {
 
                    // if (hasMACDCrossExit) {
                         doExitTrade(marketArray[index], data[data.length - 1].L, posQuantity, function(result) {

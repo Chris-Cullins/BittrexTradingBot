@@ -164,8 +164,11 @@ var placeBuyOrderLimit = function(ticker, orderQuantity, rate, callback) {
         rate: rate
     };
 
-    bittrex.buylimit(buyParams, function(result) {
-        if (result !== null && result.success === true) {
+    bittrex.buylimit(buyParams, function(result, err) {
+        if (err) {
+            console.log(err);
+            callback(err);
+        } else if (result !== null && result.success === true) {
 
             var btcValue = orderQuantity * rate;
             var newOrderQuantity = parseFloat(orderQuantity).toFixed(8);
@@ -175,9 +178,43 @@ var placeBuyOrderLimit = function(ticker, orderQuantity, rate, callback) {
             });
         } else {
             console.log(result);
+            callback(err);
         }
     });
 };
+
+var placeSellStopOrderLimit = function(ticker, orderQuantity, rate, callback) {
+    //var newOrderQuantity = (orderQuantity * 0.9975).toFixed(8);
+    var sellParams = {
+        market: ticker,
+        quantity: orderQuantity.toFixed(8),
+        rate: rate,
+        timeineffect: "GOOD_TIL_CANCELLED",
+        conditiontype: "GREATER_THAN",
+        target: 1
+    };
+
+    bittrex.selllimit(sellParams, function(result) {
+        if (result.success === true) {
+         console.log('limit set');
+         callback(result);
+        }
+    });
+
+
+};
+
+var getOpenOrders = function(ticker) {
+
+    var options = {
+        market: ticker
+    };
+
+    bittrex.getopenorders(options, function(result) {
+        console.log(result);
+    });
+
+}
 
 var placeSellOrderLimit = function(ticker, orderQuantity, rate, callback) {
 
@@ -236,3 +273,5 @@ exports.placeBuyOrderLimit = placeBuyOrderLimit;
 exports.placeSellOrderLimit = placeSellOrderLimit;
 exports.syncOrderHistory = syncOrderHistory;
 exports.placeSellOrderMarket = placeSellOrderMarket;
+exports.placeSellStopOrderLimit = placeSellStopOrderLimit;
+exports.getOpenOrders = getOpenOrders;
